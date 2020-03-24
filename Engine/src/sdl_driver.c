@@ -1636,28 +1636,37 @@ static __inline void cull_duplicate_vesa_modes(void)
 #define swap_macro(tmp, x, y) { tmp = x; x = y; y = tmp; }
 
 /* be sure to call cull_duplicate_vesa_modes() before calling this. */
+//Edited by Radar. Video resolutions are now listed in ascending order. Yes I am using bubble sort.
 static __inline void sort_vesa_modelist(void)
 {
-    int i;
-    int sorted;
+    int i, j;
     long tmp;
 
-    do
+    for (i = 0; i < validmodecnt - 1; i++)
     {
-        sorted = 1;
-        for (i = 0; i < validmodecnt - 1; i++)
-        {
-            if ( (validmodexdim[i] >= validmodexdim[i+1]) &&
-                 (validmodeydim[i] >= validmodeydim[i+1]) )
-            {
-                sorted = 0;
-                swap_macro(tmp, validmode[i], validmode[i+1]);
-                swap_macro(tmp, validmodexdim[i], validmodexdim[i+1]);
-                swap_macro(tmp, validmodeydim[i], validmodeydim[i+1]);
-            } /* if */
-        } /* for */
-    } while (!sorted);
-} /* sort_vesa_modelist */
+		for (j = 0; j < validmodecnt-i-1; j++)
+		{
+			if (validmodexdim[j] > validmodexdim[j+1])
+			{
+				swap_macro(tmp, validmode[j], validmode[j+1]);
+				swap_macro(tmp, validmodexdim[j], validmodexdim[j+1]);
+				swap_macro(tmp, validmodeydim[j], validmodeydim[j+1]);
+			}
+			else
+			{
+				if (validmodexdim[j] == validmodexdim[j+1])
+				{	
+					if (validmodeydim[j] > validmodeydim[j+1])
+					{
+						swap_macro(tmp, validmode[j], validmode[j+1]);
+						swap_macro(tmp, validmodexdim[j], validmodexdim[j+1]);
+						swap_macro(tmp, validmodeydim[j], validmodeydim[j+1]);
+					}
+				}
+			}
+		}
+    }
+}
 
 
 static __inline void cleanup_vesa_modelist(void)
