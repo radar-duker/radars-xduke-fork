@@ -273,9 +273,12 @@ extern long setvlinebpl(long);
  * !!!  needed safety right now. --ryan.
  */
 
-
-#define DEFAULT_MAXRESWIDTH  1600
-#define DEFAULT_MAXRESHEIGHT 1200
+/*
+Maximum in-game resolution is 1920x1080
+-Radar
+*/
+#define DEFAULT_MAXRESWIDTH  1920
+#define DEFAULT_MAXRESHEIGHT 1080
 
 
 #define UNLOCK_SURFACE_AND_RETURN  if (SDL_MUSTLOCK(surface)) SDL_UnlockSurface(surface); return;
@@ -1592,7 +1595,11 @@ static void remove_vesa_mode(int index, const char *reason)
     validmodecnt--;
 } /* remove_vesa_mode */
 
-
+/*
+Edited this function so it only culls resolutions greater than y=1080 AND x=1920
+Otherwise, 1600x1200 was getting deleted
+-Radar
+*/
 static __inline void cull_large_vesa_modes(void)
 {
     long max_w;
@@ -1604,10 +1611,13 @@ static __inline void cull_large_vesa_modes(void)
 
     for (i = 0; i < validmodecnt; i++)
     {
-        if ((validmodexdim[i] > max_w) || (validmodeydim[i] > max_h))
+        if (validmodexdim[i] >= max_w)
         {
-            remove_vesa_mode(i, "above resolution ceiling");
-            i--;  /* list shrinks. */
+			if (validmodeydim[i] > max_h)
+			{
+				remove_vesa_mode(i, "above resolution ceiling");
+				i--;  /* list shrinks. */
+			}
         } /* if */
     } /* for */
 } /* cull_large_vesa_modes */

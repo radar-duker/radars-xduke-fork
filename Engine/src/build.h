@@ -15,8 +15,13 @@
 #define MAXTILES 9216
 #define MAXSTATUS 1024
 #define MAXPLAYERS 16
-#define MAXXDIM 1600
-#define MAXYDIM 1200
+/*
+Max resolution changed from 1600x1200 to 3840x2160 (4k)
+I'm not able to get any decent mouse support at 4k, so the in-game res is limited to 1080p
+-Radar
+*/
+#define MAXXDIM 3840
+#define MAXYDIM 2160
 #define MAXPALOOKUPS 256
 #define MAXPSKYTILES 256
 #define MAXSPRITESONSCREEN 1024
