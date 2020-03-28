@@ -41,6 +41,7 @@ int getceilzofslope(short sectnum, long dax, long day);
 int getflorzofslope(short sectnum, long dax, long day);
 void getzsofslope(short sectnum, long dax, long day, long *ceilz, long *florz);
 void setaspect(long daxrange, long daaspect);
+void videoSetCorrectedAspect();//Widescreen function -Radar
 int insertsprite(short sectnum, short statnum);
 void updatesector(long x, long y, short *sectnum);
 int lastwall(short point);

@@ -231,6 +231,10 @@ extern void draw2dgrid(long posxe, long posye, short ange, long zoome, short gri
 extern void draw2dscreen(long posxe, long posye, short ange, long zoome, short gride);
 extern void printext256(long xpos, long ypos, short col, short backcol, char name[82], char fontsize);
 extern void printext256_noupdate(long xpos, long ypos, short col, short backcol, char name[82], char fontsize);
+//Definitions for widescreen -Radar
+extern int r_usenewaspect;
+extern int newaspect_enable;
+extern void videoSetCorrectedAspect();
 #ifdef DBGRECORD
 extern int krand(int line, char* file);
 #else

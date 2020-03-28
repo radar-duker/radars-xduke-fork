@@ -3181,7 +3181,7 @@ static void se40code(long x,long y,long z,long a,long h, long smoothratio)
 
 static long oyrepeat=-1;
 
-void displayrooms(short snum,long smoothratio)
+void displayrooms(short snum,long smoothratio)//G_DrawRooms() in EDuke32 -Radar
 {
     long cposx,cposy,cposz,dst,j,fz,cz,hz,lz;
     short sect, cang, k, choriz,tsect;
@@ -3202,6 +3202,13 @@ void displayrooms(short snum,long smoothratio)
 
     if( ud.overhead_on == 2 || ud.show_help || p->cursectnum == -1)
         return;
+
+	//Widescreen only applied when drawing rooms -Radar
+	if(r_usenewaspect)
+	{
+		newaspect_enable = 1;
+		videoSetCorrectedAspect();
+	}
 
     smoothratio = min(max(smoothratio,0),65536);
 
@@ -3403,6 +3410,13 @@ void displayrooms(short snum,long smoothratio)
             p->visibility += (ud.const_visibility-p->visibility)>>2;
     }
     else p->visibility = ud.const_visibility;
+
+	//Widescreen disabled when rooms are finished drawing. This ensures the HUD isn't screwed up. -Radar
+	if(r_usenewaspect)
+	{
+		newaspect_enable = 0;
+		setaspect(viewingrange,(long)divscale16(ydim*320L,xdim*200L));
+	}
 }
 
 

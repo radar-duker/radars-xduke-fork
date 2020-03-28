@@ -3155,7 +3155,7 @@ else
             menutext(320>>1,24,0,0,"VIDEO SETUP");
 
 			onbar = (probey == 3 || probey == 4);
-			x = probe(c+6,43,16,6);
+			x = probe(c+6,43,16,7);//added 1 to the last parameter for the widescreen option -Radar
 			
 			switch(x)
 			{
@@ -3198,6 +3198,11 @@ else
 
 					break;
 
+				case -8: // cursor idle on the widescreen option -Radar
+					gametext(320>>1,43+16*7,"*** CORRECTS ASPECT RATIO ***",0,2+8+16); // center-i
+
+					break;
+
 				case -1:
 					cmenu(200);
 					probey = 4; // back to the general option menu
@@ -3224,6 +3229,11 @@ else
 					ud.tickrate ^= 1;
 					vscrn(); // FIX_00056: Refresh issue w/FPS, small Weapon and custom FTA, when screen resized down
 					break;
+	
+				//Widescreen toggle -Radar
+				case 6:
+					r_usenewaspect = 1-r_usenewaspect;
+                    break;
 			}
 				
 			menutext(c,43,0,0,"RESOLUTION");
@@ -3275,6 +3285,10 @@ else
 
 			menutext(c,43+16*5,SHX(-2),PHX(-2),"SHOW FPS");
 			menutext(c+160+40,43+16*5,0,0,(ud.tickrate&1)?"ON":"OFF");
+
+			//Widescreen option added in video settings menu -Radar
+			menutext(c,43+16*6,SHX(-8),PHX(-8),"WIDESCREEN");
+			menutext(c+160+40,43+16*6,0,0,r_usenewaspect?"ON":"OFF");
 
 			break;
 

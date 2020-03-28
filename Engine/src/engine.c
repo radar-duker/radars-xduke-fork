@@ -41,6 +41,10 @@
 long stereowidth = 23040, stereopixelwidth = 28, ostereopixelwidth = -1;
 volatile long stereomode = 0, visualpage, activepage, whiteband, blackband;
 volatile char oa1, o3c2, ortca, ortcb, overtbits, laststereoint;
+//Widescreen variables borrowed from EDuke32 -Radar
+int r_usenewaspect = 1;
+int newaspect_enable = 0;
+long r_screenxy = 0;
 
 #include "display.h"
 
@@ -2223,7 +2227,13 @@ void drawrooms(long daposx, long daposy, long daposz,
 	globalposx = daposx; globalposy = daposy; globalposz = daposz;
 	globalang = (daang&2047);
 
-	globalhoriz = mulscale16(dahoriz-100,xdimenscale)+(ydimen>>1);
+	/*
+	This is a very important edit that retains accurate aiming when aspect ratio correction is applied.
+	Borrowed from EDuke32 r2414
+	-Radar
+	*/
+	globalhoriz = mulscale16(dahoriz-100,divscale16(xdimenscale,viewingrange))+(ydimen>>1);
+
 	globaluclip = (0-globalhoriz)*xdimscale;
 	globaldclip = (ydimen-globalhoriz)*xdimscale;
 
@@ -7328,7 +7338,9 @@ void setview(long x1, long y1, long x2, long y2)
 	xdimenrecip = divscale32(1L,xdimen);
 	ydimen = (y2-y1)+1;
 
-	setaspect(65536L,(long)divscale16(ydim*320L,xdim*200L));
+	//setaspect(65536L,(long)divscale16(ydim*320L,xdim*200L));
+	//This is where the magic happens -Radar
+	videoSetCorrectedAspect();
 
 	for(i=0;i<windowx1;i++) { startumost[i] = 1, startdmost[i] = 0; }
 	for(i=windowx1;i<=windowx2;i++)
@@ -7346,6 +7358,54 @@ void setview(long x1, long y1, long x2, long y2)
 	}
 }
 
+/*
+Borrowed from EDuke32.
+Based on the function of the same name.
+Latest source at the time of writing was r8781
+-Radar
+*/
+void videoSetCorrectedAspect()
+{
+	if(r_usenewaspect && newaspect_enable)
+	{
+		// In DOS the game world is displayed with an aspect of 1.28 instead 1.333,
+		// meaning we have to stretch it by a factor of 1.25 instead of 1.2
+		// to get perfect squares
+		long yx = (65536 * 5) / 4;
+		long vr, y, x;
+
+		const long xd = xdim;
+		const long yd = ydim;
+
+		const long screenw = r_screenxy/100;
+		const long screenh = r_screenxy%100;
+
+		if (screenw==0 || screenh==0)
+		{
+			// Assume square pixel aspect.
+			x = xd;
+			y = yd;
+		}
+		else
+		{
+			long pixratio;
+
+			x = screenw;
+			y = screenh;
+
+			pixratio = divscale16(xdim*screenh, ydim*screenw);
+			yx = divscale16(yx, pixratio);
+		}
+
+		vr = divscale16(x*3, y*4);
+
+		setaspect(vr, yx);
+	}
+	else
+	{
+		setaspect(65536L,(long)divscale16(ydim*320L,xdim*200L));
+	}
+}
 
 void setaspect(long daxrange, long daaspect)
 {
