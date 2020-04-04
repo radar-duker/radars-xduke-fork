@@ -294,6 +294,7 @@ long buffermode, origbuffermode, linearmode;
 char permanentupdate = 0, vgacompatible;
 
 SDL_Surface *surface = NULL; /* This isn't static so that we can use it elsewhere AH */
+SDL_Surface *windowSurface = NULL;//New surface that matches desktop color depth -Radar
 static int debug_hall_of_mirrors = 0;
 static Uint32 sdl_flags = SDL_HWPALETTE;
 static long mouse_relative_x = 0;
@@ -588,7 +589,20 @@ static void go_to_new_vid_mode(int davidoption, int w, int h)
     getvalidvesamodes();
     SDL_ClearError();
     // don't do SDL_SetVideoMode if SDL_WM_SetIcon not called. See sdl doc for SDL_WM_SetIcon
-	surface = SDL_SetVideoMode(w, h, 8, sdl_flags);
+	/*
+	Windows 7 color fix. This also fixes the color bug when using alt+tab on a newer OS.
+	This is accomplished by using 2 different surfaces.
+	One surface is used for rendering the image in 8-bit,
+	which is then blitted to the display surface which matches the desktop color depth.
+
+	Thanks to NY00123 for helping with the logic.
+	-Radar
+	*/
+	SDL_FreeSurface(surface);
+	surface = SDL_CreateRGBSurface(sdl_flags, w, h, 8, 0, 0, 0, 0);
+
+	windowSurface = SDL_SetVideoMode(w, h, 0, sdl_flags);
+
     if (surface == NULL)
     {
 		Error(EXIT_FAILURE,	"BUILDSDL: Failed to set %dx%d video mode!\n"
@@ -1817,7 +1831,9 @@ int VBE_setPalette(long start, long num, char *palettebuffer)
         dglPixelMapfv(GL_PIXEL_MAP_I_TO_A, start + num, gl_alphas);
     } /* if */
 #endif
-    return(SDL_SetColors(surface, fmt_swap, start, num));
+    SDL_SetColors(surface, fmt_swap, start, num);
+	_nextpage();//After the color fix, SDL_SetColors() requires an explicit call to blit the page -Radar
+	return;
 } /* VBE_setPalette */
 
 
@@ -1906,7 +1922,8 @@ static unsigned char mirrorcolor = 0;
 void _updateScreenRect(long x, long y, long w, long h)
 {
     if (renderer == RENDERER_SOFTWARE)
-        SDL_UpdateRect(surface, x, y, w, h);
+		SDL_BlitSurface(surface, NULL, windowSurface, NULL);//Surface blits to window with proper color depth -Radar
+        SDL_UpdateRect(windowSurface, x, y, w, h);
 } /* _updatescreenrect */
 
 
@@ -1920,7 +1937,8 @@ void _nextpage(void)
     {
 		// FIX_00085: Optimized Video driver. FPS increases by +20%.
         // SDL_Flip(surface);
-		SDL_UpdateRect(surface, 0, 0, 0, 0);
+		SDL_BlitSurface(surface, NULL, windowSurface, NULL);//Surface blits to window with proper color depth -Radar
+		SDL_UpdateRect(windowSurface, 0, 0, 0, 0);
     }
 
 #ifdef USE_OPENGL
