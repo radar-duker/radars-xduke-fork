@@ -3243,7 +3243,7 @@ void displayrooms(short snum,long smoothratio)//G_DrawRooms() in EDuke32 -Radar
     else
     {
         i = divscale22(1,sprite[p->i].yrepeat+28);
-        if (i != oyrepeat)
+        if (i != oyrepeat || i != 65536)
         {
             oyrepeat = i;
 			//printf("1: %d %d\n", oyrepeat,yxaspect);
