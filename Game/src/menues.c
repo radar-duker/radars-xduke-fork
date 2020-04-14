@@ -2447,7 +2447,7 @@ else
 
             c = (320>>1)-120;
 
-            x = probe(c+6,43,16,6);
+            x = probe(c+6,43,16,7);
 
             if(x == -1)
                 { if(ps[myconnectindex].gm&MODE_GAME) cmenu(50);else cmenu(0); }
@@ -2491,6 +2491,12 @@ else
                     ud.m_recstat = !ud.m_recstat;
                     break;
 
+				case 6:
+					colorfix = 1-colorfix;
+
+				case -8:
+					gametext(320>>1,43+16*7,"*** REQUIRES RESTART ***",0,2+8+16); // center-i
+
 				//case -7:
 				//	gametext(320>>1,43+16*6,"*** DISABLED. WILL BE FIXED SOON***",0,2+8+16); // center-i
 				//	break;
@@ -2520,6 +2526,9 @@ else
                     menutext(c+160+40,43+16+16+16+16+16,SHX(-10),PHX(-10),"ON");
                 else menutext(c+160+40,43+16+16+16+16+16,SHX(-10),PHX(-10),"OFF");
             }
+
+			menutext(c,43+16*6,SHX(-8),PHX(-8),"COLOR FIX");
+			menutext(c+160+40,43+16*6,0,0,colorfix?"ON":"OFF");
 
             break;
 

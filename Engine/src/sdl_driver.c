@@ -321,6 +321,10 @@ static FILE *_sdl_debug_file = NULL;
 
 void set_sdl_renderer(void);
 
+//colorfix variables -Radar
+int r_colorfix = 0;//read-only value
+int colorfix = 0;//write-only value
+
 static __inline void __out_sdldebug(const char *subsystem,
                                   const char *fmt, va_list ap)
 {
@@ -598,10 +602,18 @@ static void go_to_new_vid_mode(int davidoption, int w, int h)
 	Thanks to NY00123 for helping with the logic.
 	-Radar
 	*/
-	SDL_FreeSurface(surface);
-	surface = SDL_CreateRGBSurface(sdl_flags, w, h, 8, 0, 0, 0, 0);
 
-	windowSurface = SDL_SetVideoMode(w, h, 0, sdl_flags);
+	if(r_colorfix==0)
+	{
+		surface = SDL_SetVideoMode(w, h, 8, sdl_flags);
+	}
+	else
+	{
+		SDL_FreeSurface(surface);
+		surface = SDL_CreateRGBSurface(sdl_flags, w, h, 8, 0, 0, 0, 0);
+
+		windowSurface = SDL_SetVideoMode(w, h, 0, sdl_flags);
+	}
 
     if (surface == NULL)
     {
@@ -1831,8 +1843,10 @@ int VBE_setPalette(long start, long num, char *palettebuffer)
         dglPixelMapfv(GL_PIXEL_MAP_I_TO_A, start + num, gl_alphas);
     } /* if */
 #endif
-    SDL_SetColors(surface, fmt_swap, start, num);
-	_nextpage();//After the color fix, SDL_SetColors() requires an explicit call to blit the page -Radar
+	SDL_SetColors(surface, fmt_swap, start, num);
+	if(r_colorfix==1) 
+		nextpage();//After the color fix, SDL_SetColors() requires an explicit call to blit the page -Radar
+	
 	return;
 } /* VBE_setPalette */
 
@@ -1922,8 +1936,15 @@ static unsigned char mirrorcolor = 0;
 void _updateScreenRect(long x, long y, long w, long h)
 {
     if (renderer == RENDERER_SOFTWARE)
-		SDL_BlitSurface(surface, NULL, windowSurface, NULL);//Surface blits to window with proper color depth -Radar
-        SDL_UpdateRect(windowSurface, x, y, w, h);
+		if(r_colorfix == 0)
+		{
+			 SDL_UpdateRect(surface, x, y, w, h);
+		}
+		else
+		{
+			SDL_BlitSurface(surface, NULL, windowSurface, NULL);//Surface blits to window with proper color depth -Radar
+			SDL_UpdateRect(windowSurface, x, y, w, h);
+		}
 } /* _updatescreenrect */
 
 
@@ -1937,8 +1958,15 @@ void _nextpage(void)
     {
 		// FIX_00085: Optimized Video driver. FPS increases by +20%.
         // SDL_Flip(surface);
-		SDL_BlitSurface(surface, NULL, windowSurface, NULL);//Surface blits to window with proper color depth -Radar
-		SDL_UpdateRect(windowSurface, 0, 0, 0, 0);
+		if(r_colorfix == 0)
+		{
+			 SDL_UpdateRect(surface, 0, 0, 0, 0);
+		}
+		else
+		{
+			SDL_BlitSurface(surface, NULL, windowSurface, NULL);//Surface blits to window with proper color depth -Radar
+			SDL_UpdateRect(windowSurface, 0, 0, 0, 0);
+		}
     }
 
 #ifdef USE_OPENGL

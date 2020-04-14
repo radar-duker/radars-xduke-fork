@@ -51,6 +51,7 @@ void CVARDEFS_Init()
     REGCONVAR("TicksPerFrame", " - Changes the ticks per frame", g_iTicksPerFrame, CVARDEFS_DefaultFunction);
 	
     REGCONVAR("hudaspect", " - 0-OFF, 1-ON, 2-AUTO", r_hudaspect, CVARDEFS_DefaultFunction);
+	REGCONVAR("colorfix", " - 0-OFF, 1-ON", colorfix, CVARDEFS_DefaultFunction);
 
     REGCONFUNC("Quit", " - Quit game.", CVARDEFS_FunctionQuit);
     REGCONFUNC("Clear", " - Clear the console.", CVARDEFS_FunctionClear);

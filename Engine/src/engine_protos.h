@@ -236,6 +236,8 @@ extern int r_usenewaspect;
 extern int newaspect_enable;
 extern void videoSetCorrectedAspect();
 extern int r_hudaspect;
+extern int r_colorfix;
+extern int colorfix;
 #ifdef DBGRECORD
 extern int krand(int line, char* file);
 #else
