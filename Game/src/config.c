@@ -773,6 +773,7 @@ void CONFIG_ReadSetup( void )
    SCRIPT_GetNumber( scripthandle, "Screen Setup", "ShowFPS",&ud.tickrate);
    ud.tickrate &= 1;
    SCRIPT_GetNumber( scripthandle, "Screen Setup", "Widescreen",&r_usenewaspect);//Widescreen setting in duke3d.cfg -Radar
+   SCRIPT_GetNumber( scripthandle, "Screen Setup", "WidescreenHUD",&r_hudaspect);//Widescreen HUD setting in duke3d.cfg -Radar
    SCRIPT_GetNumber( scripthandle, "Misc", "Executions",&ud.executions);
    ud.executions++;
    SCRIPT_GetNumber( scripthandle, "Misc", "RunMode",&ud.auto_run);
@@ -926,6 +927,7 @@ void CONFIG_WriteSetup( void )
    SCRIPT_PutNumber( scripthandle, "Screen Setup", "ScreenHeight",ydim,false,false);
    SCRIPT_PutNumber( scripthandle, "Screen Setup", "Fullscreen",BFullScreen,false,false);
    SCRIPT_PutNumber( scripthandle, "Screen Setup", "Widescreen",r_usenewaspect,false,false);//Widescreen setting in duke3d.cfg -Radar
+   SCRIPT_PutNumber( scripthandle, "Screen Setup", "WidescreenHUD",r_hudaspect,false,false);//Widescreen HUD setting in duke3d.cfg -Radar
    SCRIPT_PutNumber( scripthandle, "Sound Setup", "FXVolume",FXVolume,false,false);
    SCRIPT_PutNumber( scripthandle, "Sound Setup", "MusicVolume",MusicVolume,false,false);
    SCRIPT_PutNumber( scripthandle, "Sound Setup", "FXDevice",FXDevice,false,false);

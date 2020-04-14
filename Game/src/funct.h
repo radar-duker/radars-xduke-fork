@@ -311,7 +311,7 @@ extern int gametext(int x,int y,char *t,char s,short dabits);
 //#line "game.c" 136
 extern int gametextpart(int x,int y,char *t,char s,short p);
 //#line "game.c" 192
-extern int minitext(int x,int y,char *t,char p,char sb);
+extern int minitext(int x,int y,char *t,char p,long sb);
 //#line "game.c" 231
 extern void gamenumber(long x,long y,long n,char s);
 //#line "game.c" 248
@@ -335,9 +335,9 @@ extern short badguypic(short pn);
 //#line "game.c" 963
 extern void myos(long x,long y,short tilenum,signed char shade,char orientation);
 //#line "game.c" 976
-extern void myospal(long x,long y,short tilenum,signed char shade,char orientation,char p);
+extern void myospal(long x,long y,short tilenum,signed char shade,long orientation,char p);
 //#line "game.c" 991
-extern void invennum(long x,long y,char num1,char ha,char sbits);
+extern void invennum(long x,long y,char num1,char ha,long sbits);
 //#line "game.c" 1021
 extern void weaponnum(short ind,long x,long y,long num1,long num2,char ha);
 //#line "game.c" 1049
@@ -345,7 +345,7 @@ extern void weaponnum999(char ind,long x,long y,long num1,long num2,char ha);
 //#line "game.c" 1088
 extern void weapon_amounts(struct player_struct *p,long x,long y,long u);
 //#line "game.c" 1197
-extern void digitalnumber(long x,long y,long n,char s,char cs);
+extern void digitalnumber(long x,long y,long n,char s,long cs);
 //#line "game.c" 1223
 extern void scratchmarks(long x,long y,long n,char s,char p);
 //#line "game.c" 1238

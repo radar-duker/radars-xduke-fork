@@ -45,6 +45,7 @@ volatile char oa1, o3c2, ortca, ortcb, overtbits, laststereoint;
 int r_usenewaspect = 1;
 int newaspect_enable = 0;
 long r_screenxy = 0;
+int r_hudaspect = 2;
 
 #include "display.h"
 
@@ -3099,10 +3100,119 @@ static int clippoly4(long cx1, long cy1, long cx2, long cy2)
 	return(n);
 }
 
+/*
+Magic widescreen HUD helper function borrowed from EDuke32
+Using OldMP version from commit 000551f0, since it is conveniently formatted as a drop-in patch.
 
+-Radar
+*/
+void dorotspr_handle_bit2(int32_t *sxptr, int32_t *syptr, int32_t *z, int32_t dastat,
+    int32_t cx1_plus_cx2, int32_t cy1_plus_cy2,
+    int32_t *ret_yxaspect, int32_t *ret_xyaspect)
+{
+    int32_t x, sx, sy;
 
+    int32_t ouryxaspect = yxaspect, ourxyaspect = xyaspect;
+
+    if ((dastat & 2) == 0)
+        if (!(dastat & 1024) && 4 * ydim <= 3 * xdim)
+        {
+            *ret_yxaspect = (12 << 16) / 10;
+            *ret_xyaspect = (1LL << 32) / ouryxaspect;
+
+            // *sxptr and *syptr and *z are left unchanged
+            return;
+        }
+
+    // dastat&2: Auto window size scaling
+
+    sx = *sxptr;
+    sy = *syptr;
+
+    // nasty hacks go here
+    if (!(dastat & 8))
+    {
+        const int32_t cxs = cx1_plus_cx2 + 2;
+        int32_t sthelse;
+
+        const int32_t oxdim = xdim;
+        int32_t xdim = oxdim;  // SHADOWS global
+
+        x = xdimenscale;   //= scale(xdimen,yxaspect,320);
+
+        if (!(dastat & 1024) && 4 * ydim <= 3 * xdim)
+        {
+            xdim = (4 * ydim) / 3;
+
+            // ouryxaspect is divscale16(ydim*320, xdim*200)
+            ouryxaspect = (12 << 16) / 10;
+            ourxyaspect = (1LL << 32) / ouryxaspect;
+        }
+
+        sthelse = scale(sx - (320 << 15), scale(xdimen, xdim, oxdim), 320);
+
+        {
+            int32_t xbord = 0;
+
+            if (dastat & (256 | 512))
+            {
+                xbord = scale(oxdim - xdim, cxs, oxdim);
+
+                if ((dastat & 512) == 0)
+                    xbord = -xbord;
+            }
+
+            sx = ((cxs + xbord) << 15) + sthelse;
+        }
+
+        sy = ((cy1_plus_cy2 + 2) << 15) + mulscale16(sy - (200 << 15), x);
+    }
+    else
+    {
+        //If not clipping to startmosts, & auto-scaling on, as a
+        //hard-coded bonus, scale to full screen instead
+
+        const int32_t oxdim = xdim;
+        int32_t xdim = oxdim;  // SHADOWS global
+
+        if (!(dastat & 1024) && 4 * ydim <= 3 * xdim)
+        {
+            xdim = (4 * ydim) / 3;
+
+            ouryxaspect = (12 << 16) / 10;
+            ourxyaspect = (1LL << 32) / ouryxaspect;
+        }
+
+        x = scale(xdim, ouryxaspect, 320);
+        sx = (xdim << 15) + 32768 + scale(sx - (320 << 15), xdim, 320);
+        sy = (ydim << 15) + 32768 + mulscale16(sy - (200 << 15), x);
+
+        if (dastat & 512)
+            sx += (oxdim - xdim) << 16;
+        else if ((dastat & 256) == 0)
+            sx += (oxdim - xdim) << 15;
+    }
+
+    *sxptr = sx;
+    *syptr = sy;
+    *z = mulscale16(*z, x);
+
+    *ret_yxaspect = ouryxaspect;
+    *ret_xyaspect = ourxyaspect;
+}
+
+/*
+dastat type changed from char to long
+This is to support extended bits for dastat
+
+256 - left-aligned HUD sprite
+512 - right-aligned HUD sprite
+1024 - no aspect correction applied to HUD sprite
+
+-Radar
+*/
 static void dorotatesprite (long sx, long sy, long z, short a, short picnum,
-	signed char dashade, unsigned char dapalnum, char dastat, long cx1,
+	signed char dashade, unsigned char dapalnum, long dastat, long cx1,
 	long cy1, long cx2, long cy2)
 {
 	long cosang, sinang, v, nextv, dax1, dax2, oy, bx, by, ny1, ny2;
@@ -3110,6 +3220,7 @@ static void dorotatesprite (long sx, long sy, long z, short a, short picnum,
 	long xsiz, ysiz, xoff, yoff, npoints, yplc, yinc, lx, rx, xx, xend;
 	long xv, yv, xv2, yv2, obuffermode=0, qlinemode=0, y1ve[4], y2ve[4], u4, d4;
 	char bad;
+	int32_t ouryxaspect, ourxyaspect;//Widescreen HUD variables borrowed from EDuke32 -Radar
 
 	xsiz = tilesizx[picnum]; ysiz = tilesizy[picnum];
 	if (dastat&16) { xoff = 0; yoff = 0; }
@@ -3123,34 +3234,58 @@ static void dorotatesprite (long sx, long sy, long z, short a, short picnum,
 
 	cosang = sintable[(a+512)&2047]; sinang = sintable[a&2047];
 
-	if ((dastat&2) != 0)  /* Auto window size scaling */
+	/*
+	r_hudaspect has 3 settings:
+
+	0 - off
+	1 - on
+	2 - auto (disabled on DOS-era resolutions, 800x600 and lower)
+
+	-Radar
+	*/
+	if((r_hudaspect == 2 && xdim > 800) || r_hudaspect == 1)
 	{
-		if ((dastat&8) == 0)
+		dorotspr_handle_bit2(&sx, &sy, &z, dastat, cx1 + cx2, cy1 + cy2, &ouryxaspect, &ourxyaspect);
+	}
+	else
+	{
+		if ((dastat&2) != 0)  /* Auto window size scaling */
 		{
-			x = xdimenscale;   /* = scale(xdimen,yxaspect,320); */
-			if (stereomode) x = scale(windowx2-windowx1+1,yxaspect,320);
-			sx = ((cx1+cx2+2)<<15)+scale(sx-(320<<15),xdimen,320);
-			sy = ((cy1+cy2+2)<<15)+mulscale16(sy-(200<<15),x);
+			if ((dastat&8) == 0)
+			{
+				x = xdimenscale;   /* = scale(xdimen,yxaspect,320); */
+				if (stereomode) x = scale(windowx2-windowx1+1,yxaspect,320);
+				sx = ((cx1+cx2+2)<<15)+scale(sx-(320<<15),xdimen,320);
+				sy = ((cy1+cy2+2)<<15)+mulscale16(sy-(200<<15),x);
+			}
+			else
+			{
+				  /*
+				   * If not clipping to startmosts, & auto-scaling on, as a
+				   *  hard-coded bonus, scale to full screen instead
+				   */
+				x = scale(xdim,yxaspect,320);
+				sx = (xdim<<15)+32768+scale(sx-(320<<15),xdim,320);
+				sy = (ydim<<15)+32768+mulscale16(sy-(200<<15),x);
+			}
+			z = mulscale16(z,x);
 		}
-		else
-		{
-			  /*
-			   * If not clipping to startmosts, & auto-scaling on, as a
-			   *  hard-coded bonus, scale to full screen instead
-               */
-            x = scale(xdim,yxaspect,320);
-			sx = (xdim<<15)+32768+scale(sx-(320<<15),xdim,320);
-			sy = (ydim<<15)+32768+mulscale16(sy-(200<<15),x);
-		}
-		z = mulscale16(z,x);
 	}
 
 	xv = mulscale14(cosang,z);
 	yv = mulscale14(sinang,z);
 	if (((dastat&2) != 0) || ((dastat&8) == 0)) /* Don't aspect unscaled perms */
 	{
-		xv2 = mulscale16(xv,xyaspect);
-		yv2 = mulscale16(yv,xyaspect);
+		if((r_hudaspect == 2 && xdim > 800) || r_hudaspect == 1)
+		{
+			xv2 = mulscale16(xv, ourxyaspect);
+			yv2 = mulscale16(yv, ourxyaspect);
+		}
+		else
+		{
+			xv2 = mulscale16(xv,xyaspect);
+			yv2 = mulscale16(yv,xyaspect);
+		}
 	}
 	else
 	{
@@ -3213,8 +3348,16 @@ static void dorotatesprite (long sx, long sy, long z, short a, short picnum,
 	yv = mulscale14(cosang,i);
 	if (((dastat&2) != 0) || ((dastat&8) == 0)) /* Don't aspect unscaled perms */
 	{
-		yv2 = mulscale16(-xv,yxaspect);
-		xv2 = mulscale16(yv,yxaspect);
+		if((r_hudaspect == 2 && xdim > 800) || r_hudaspect == 1)
+		{
+			yv2 = mulscale16(-xv, ouryxaspect);
+			xv2 = mulscale16(yv, ouryxaspect);
+		}
+		else
+		{
+			yv2 = mulscale16(-xv,yxaspect);
+			xv2 = mulscale16(yv,yxaspect);
+		}
 	}
 	else
 	{
@@ -7426,7 +7569,7 @@ void flushperms(void)
 
 
 void rotatesprite(long sx, long sy, long z, short a, short picnum,
-                  signed char dashade, char dapalnum, char dastat,
+                  signed char dashade, char dapalnum, long dastat,
                   long cx1, long cy1, long cx2, long cy2)
 {
 	long i;

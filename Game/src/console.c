@@ -380,8 +380,8 @@ void CONSOLE_Render()
         }
 
         // Draw bottom egde of console
-        rotatesprite(78<<16,94<<16,65536L,512,WINDOWBORDER1,24,0,2+8,0,0,xdim-1,ydim-1);
-        rotatesprite(238<<16,94<<16,65536L,512,WINDOWBORDER1,24,0,2+8,0,0,xdim-1,ydim-1);
+        rotatesprite(78<<16,94<<16,65536L,512,WINDOWBORDER1,24,0,2+8+1024,0,0,xdim-1,ydim-1);
+        rotatesprite(238<<16,94<<16,65536L,512,WINDOWBORDER1,24,0,2+8+1024,0,0,xdim-1,ydim-1);
 
         // Draw the contents of the console buffer
         pElement = p_console_current_view;//console_buffer;
@@ -395,7 +395,7 @@ void CONSOLE_Render()
             minitext(5,(8*(9-i)) + iYOffset,
                      pElement->text,
                      g_CV_console_text_color,
-                     10+16);
+                     10+16+1024);
 
              pElement = (CONSOLEELEMENT*)pElement->next;
 
@@ -405,16 +405,16 @@ void CONSOLE_Render()
         iCurHeight = (8*10) + iYOffset;
 
         // Draw dirty buffer
-        minitext(5, iCurHeight, dirty_buffer, 0,10+16);
+        minitext(5, iCurHeight, dirty_buffer, 0,10+16+1024);
 
         // Calculate the location of the cursor
         iCurWidth =  (console_cursor_pos*4) + (console_num_spaces*5) +5;
 
         //Draw the version number
-        minitext(283, iCurHeight, BUILD_NUMBER, 17,10+16);
+        minitext(283, iCurHeight, BUILD_NUMBER, 17,10+16+1024);
 
         // Draw the cursor //Change the color every second
-        minitext(iCurWidth, iCurHeight,"_",(time(NULL)%2)+1,10+16);        
+        minitext(iCurWidth, iCurHeight,"_",(time(NULL)%2)+1,10+16+1024);        
     }
     else 
     if(g_CV_num_console_lines > 0)
@@ -433,7 +433,7 @@ void CONSOLE_Render()
             minitext(5,(8*((g_CV_num_console_lines-1)-i)) + iYOffset,
                      pElement->text,
                      g_CV_console_text_color,
-                     10+16);
+                     10+16+1024);
 
              pElement = (CONSOLEELEMENT*)pElement->next;
         }

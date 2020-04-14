@@ -2864,7 +2864,7 @@ else
         case 703:
 
 			// black translucent background underneath lists
-			rotatesprite(0<<16, 0<<16, 65536l<<5, 0, BLANK, 8, 0, 1+2+8+16+64,
+			rotatesprite(0<<16, 0<<16, 65536l<<5, 0, BLANK, 8, 0, 1+2+8+16+64+1024,
 			    scale(0,xdim,320),scale(0,ydim,200),
 			    scale(320-0,xdim,320)-1,scale(200-34,ydim,200)-1);
 

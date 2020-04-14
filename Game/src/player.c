@@ -1437,12 +1437,12 @@ void displayweapon(short snum)
 						if(*kb < 8)
 						{
 							myospal(weapon_xoffset+164,(looking_arc<<1)+176-gun_pos,
-									RPGGUN+((*kb)>>1),gs,o,pal);
+									RPGGUN+((*kb)>>1),gs,o|512,pal);
 						}
 					}
 
 					myospal(weapon_xoffset+164,(looking_arc<<1)+176-gun_pos,
-							RPGGUN,gs,o,pal);
+							RPGGUN,gs,o|512,pal);
 
 					break;
 
@@ -1591,29 +1591,29 @@ void displayweapon(short snum)
 					else
 					{
 						if((*kb) < 10)
-							myospal(194-(p->look_ang>>1),looking_arc+230-gun_pos,FIRSTGUN+4,gs,o,pal);
+							myospal(194-(p->look_ang>>1),looking_arc+230-gun_pos,FIRSTGUN+4,gs,o|512,pal);
 						else if((*kb) < 15)
 						{
-							myospal(244-((*kb)<<3)-(p->look_ang>>1),looking_arc+130-gun_pos+((*kb)<<4),FIRSTGUN+6,gs,o,pal);
-							myospal(224-(p->look_ang>>1),looking_arc+220-gun_pos,FIRSTGUN+5,gs,o,pal);
+							myospal(244-((*kb)<<3)-(p->look_ang>>1),looking_arc+130-gun_pos+((*kb)<<4),FIRSTGUN+6,gs,o|512,pal);
+							myospal(224-(p->look_ang>>1),looking_arc+220-gun_pos,FIRSTGUN+5,gs,o|512,pal);
 						}
 						else if((*kb) < 20)
 						{
-							myospal(124+((*kb)<<1)-(p->look_ang>>1),looking_arc+430-gun_pos-((*kb)<<3),FIRSTGUN+6,gs,o,pal);
-							myospal(224-(p->look_ang>>1),looking_arc+220-gun_pos,FIRSTGUN+5,gs,o,pal);
+							myospal(124+((*kb)<<1)-(p->look_ang>>1),looking_arc+430-gun_pos-((*kb)<<3),FIRSTGUN+6,gs,o|512,pal);
+							myospal(224-(p->look_ang>>1),looking_arc+220-gun_pos,FIRSTGUN+5,gs,o|512,pal);
 						}
 						else if((*kb) < 23)
 						{
-							myospal(184-(p->look_ang>>1),looking_arc+235-gun_pos,FIRSTGUN+8,gs,o,pal);
-							myospal(224-(p->look_ang>>1),looking_arc+210-gun_pos,FIRSTGUN+5,gs,o,pal);
+							myospal(184-(p->look_ang>>1),looking_arc+235-gun_pos,FIRSTGUN+8,gs,o|512,pal);
+							myospal(224-(p->look_ang>>1),looking_arc+210-gun_pos,FIRSTGUN+5,gs,o|512,pal);
 						}
 						else if((*kb) < 25)
 						{
-							myospal(164-(p->look_ang>>1),looking_arc+245-gun_pos,FIRSTGUN+8,gs,o,pal);
-							myospal(224-(p->look_ang>>1),looking_arc+220-gun_pos,FIRSTGUN+5,gs,o,pal);
+							myospal(164-(p->look_ang>>1),looking_arc+245-gun_pos,FIRSTGUN+8,gs,o|512,pal);
+							myospal(224-(p->look_ang>>1),looking_arc+220-gun_pos,FIRSTGUN+5,gs,o|512,pal);
 						}
 						else if((*kb) < 27)
-							myospal(194-(p->look_ang>>1),looking_arc+235-gun_pos,FIRSTGUN+5,gs,o,pal);
+							myospal(194-(p->look_ang>>1),looking_arc+235-gun_pos,FIRSTGUN+5,gs,o|512,pal);
 					}
 
 					break;
@@ -1705,10 +1705,10 @@ void displayweapon(short snum)
 							looking_arc += rand()&3;
 						}
 						gun_pos -= 16;
-						myospal(weapon_xoffset+210-(p->look_ang>>1),looking_arc+261-gun_pos,FREEZE+2,-32,o,pal);
-						myospal(weapon_xoffset+210-(p->look_ang>>1),looking_arc+235-gun_pos,FREEZE+3+cat_frames[*kb%6],-32,o,pal);
+						myospal(weapon_xoffset+210-(p->look_ang>>1),looking_arc+261-gun_pos,FREEZE+2,-32,o|512,pal);
+						myospal(weapon_xoffset+210-(p->look_ang>>1),looking_arc+235-gun_pos,FREEZE+3+cat_frames[*kb%6],-32,o|512,pal);
 					}
-					else myospal(weapon_xoffset+210-(p->look_ang>>1),looking_arc+261-gun_pos,FREEZE,gs,o,pal);
+					else myospal(weapon_xoffset+210-(p->look_ang>>1),looking_arc+261-gun_pos,FREEZE,gs,o|512,pal);
 
 					break;
 

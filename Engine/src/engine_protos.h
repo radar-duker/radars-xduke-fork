@@ -235,6 +235,7 @@ extern void printext256_noupdate(long xpos, long ypos, short col, short backcol,
 extern int r_usenewaspect;
 extern int newaspect_enable;
 extern void videoSetCorrectedAspect();
+extern int r_hudaspect;
 #ifdef DBGRECORD
 extern int krand(int line, char* file);
 #else
@@ -244,7 +245,7 @@ extern void getzrange(long x, long y, long z, short sectnum, long *ceilz, long *
 extern void setview(long x1, long y1, long x2, long y2);
 extern void setaspect(long daxrange, long daaspect);
 extern void flushperms(void);
-extern void rotatesprite(long sx, long sy, long z, short a, short picnum, signed char dashade, char dapalnum, char dastat, long cx1, long cy1, long cx2, long cy2);
+extern void rotatesprite(long sx, long sy, long z, short a, short picnum, signed char dashade, char dapalnum, long dastat, long cx1, long cy1, long cx2, long cy2);
 extern void makepalookup(long palnum, char *remapbuf, signed char r, signed char g, signed char b, char dastat);
 extern void setbrightness(char dabrightness, unsigned char *dapal);
 extern void drawmapview(long dax, long day, long zoome, short ang);

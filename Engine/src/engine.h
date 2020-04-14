@@ -132,7 +132,7 @@ int krand(void);
 #endif
 void flushperms(void);
 void rotatesprite(long sx, long sy, long z, short a, short picnum,
-                  signed char dashade, char dapalnum, char dastat,
+                  signed char dashade, char dapalnum, long dastat,
                   long cx1, long cy1, long cx2, long cy2);
 void makepalookup(long palnum, char *remapbuf, signed char r,
                   signed char g, signed char b, char dastat);
