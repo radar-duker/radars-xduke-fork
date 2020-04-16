@@ -72,14 +72,16 @@ int32 BFullScreen = 1;
 //
 
 int32 ScreenMode=2;
-int32 ScreenWidth = 640;
-int32 ScreenHeight = 480;
+int32 ScreenWidth = 800;
+int32 ScreenHeight = 600;
 
 //
 // Mouse variables
 //
 int32 mouseSensitivity_X;
 int32 mouseSensitivity_Y;
+
+int defaultMouseFlag = 0;
 
 static char setupfilename[512];//={SETUPFILENAME};
 static int32 scripthandle;
@@ -340,10 +342,10 @@ void CONFIG_SetDefaults( void )
 
    // game
    ps[0].aim_mode = 0;
-   ud.screen_size = 8;
-   ud.extended_screen_size = 0;
+   ud.screen_size = 4;
+   ud.extended_screen_size = 1;
    ud.screen_tilting = 1;
-   ud.brightness = 16;
+   ud.brightness = 0;
    ud.auto_run = 1;
    ud.showweapons = 0;
    ud.tickrate = 0;
@@ -361,6 +363,8 @@ void CONFIG_SetDefaults( void )
    ud.auto_aim = 2; // full by default
    ud.gitdat_mdk = 0;
    ud.playing_demo_rev = 0;
+   ud.mouseflip = 1;
+   myaimmode = 1;
 
    // com
    strcpy(ud.rtsname,"DUKE.RTS");
@@ -456,20 +460,32 @@ void CONFIG_SetupMouse( int32 scripthandle )
    char str[80];
    char temp[80];
    int32 function, scale;
-
-   for (i=0;i<MAXMOUSEBUTTONS;i++)
-      {
-      sprintf(str,"MouseButton%ld",i);
-      memset(temp,0,sizeof(temp));
-      SCRIPT_GetString( scripthandle,"Controls", str,temp);
-      function = CONFIG_FunctionNameToNum(temp);
-      CONTROL_MapButton( function, i, false );
-      sprintf(str,"MouseButtonClicked%ld",i);
-      memset(temp,0,sizeof(temp));
-      SCRIPT_GetString( scripthandle,"Controls", str,temp);
-      function = CONFIG_FunctionNameToNum(temp);
-      CONTROL_MapButton( function, i, true );
-      }
+   
+	if(defaultMouseFlag!=0)
+	{
+		for (i=0;i<MAXMOUSEBUTTONS;i++)
+		{
+			function = CONFIG_FunctionNameToNum(mousedefaults[i]);
+			CONTROL_MapButton( function, i, false );
+			CONTROL_MapButton( function, i, true );
+		}
+	}
+	else
+	{
+		for (i=0;i<MAXMOUSEBUTTONS;i++)
+		{
+			sprintf(str,"MouseButton%ld",i);
+			memset(temp,0,sizeof(temp));
+			SCRIPT_GetString( scripthandle,"Controls", str,temp);
+			function = CONFIG_FunctionNameToNum(temp);
+			CONTROL_MapButton( function, i, false );
+			sprintf(str,"MouseButtonClicked%ld",i);
+			memset(temp,0,sizeof(temp));
+			SCRIPT_GetString( scripthandle,"Controls", str,temp);
+			function = CONFIG_FunctionNameToNum(temp);
+			CONTROL_MapButton( function, i, true );
+		}
+	}
    // map over the axes
    for (i=0;i<MAXMOUSEAXES;i++)
       {
@@ -713,6 +729,9 @@ void CONFIG_ReadSetup( void )
 		//            if not found and use default keys.
       printf("%s does not exist. Don't forget to set it up!\n" ,setupfilename);
 	  setup_file_hdl = fopen (setupfilename, "w"); // create it...
+
+	  defaultMouseFlag = 1;
+
 	  if(setup_file_hdl)
 		  fclose(setup_file_hdl);
       }
