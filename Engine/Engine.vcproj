@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="Engine"
 	ProjectGUID="{05511B4A-FB13-49E5-AE53-EE1F063C055D}"
+	RootNamespace="Engine"
 	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
@@ -42,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\SDL-1.2.9\include&quot;;src\enet\include"
+				AdditionalIncludeDirectories="&quot;..\lib\sdl\include&quot;;src\enet\include"
 				PreprocessorDefinitions="nDBGRECORD; nDEBUG; PLATFORM_WIN32; UDP_NETWORKING; WIN32; _LIB; _CRT_SECURE_NO_DEPRECATE; _CRT_NONSTDC_NO_DEPRECATE"
 				RuntimeLibrary="0"
 				DefaultCharIsUnsigned="true"
@@ -65,6 +66,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalLibraryDirectories=""
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -116,8 +118,8 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="&quot;..\..\SDL-1.2.9\include&quot;;src\enet\include"
-				PreprocessorDefinitions="nDBGRECORD; nDEBUG; PLATFORM_WIN32; UDP_NETWORKING; WIN32; _LIB; _CRT_SECURE_NO_DEPRECATE; _CRT_NONSTDC_NO_DEPRECATE"
+				AdditionalIncludeDirectories="&quot;..\lib\sdl\include&quot;;src\enet\include"
+				PreprocessorDefinitions="nDBGRECORD; nDEBUG; PLATFORM_WIN32; UDP_NETWORKING; WIN32; _LIB; _CRT_SECURE_NO_DEPRECATE; _CRT_NONSTDC_NO_DEPRECATE;"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				DefaultCharIsUnsigned="true"
@@ -137,6 +139,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalLibraryDirectories=""
 				SuppressStartupBanner="true"
 			/>
 			<Tool

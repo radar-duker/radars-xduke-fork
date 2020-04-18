@@ -49,8 +49,8 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="&quot;..\..\SDL-1.2.9\include&quot;;&quot;..\..\SDL_mixer-1.2.6&quot;;..\Engine\src;.\src"
-				PreprocessorDefinitions="nDBGRECORD; CHECK_XDUKE_REV; nDEBUG; WIN32; _CONSOLE; PLATFORM_WIN32; _CRT_SECURE_NO_DEPRECATE; _CRT_NONSTDC_NO_DEPRECATE"
+				AdditionalIncludeDirectories="&quot;..\lib\sdl\include&quot;;&quot;..\lib\sdl_mixer\include&quot;;..\Engine\src;"
+				PreprocessorDefinitions="nDBGRECORD; CHECK_XDUKE_REV; nDEBUG; WIN32; _CONSOLE; PLATFORM_WIN32; _CRT_SECURE_NO_DEPRECATE; _CRT_NONSTDC_NO_DEPRECATE;"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
 				DefaultCharIsUnsigned="true"
@@ -78,7 +78,7 @@
 				Version="19.4"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;..\..\Directx_dec_2005\&quot;;&quot;..\..\SDL-1.2.9\VisualC\SDL\Release&quot;;&quot;..\..\SDL_mixer-1.2.6\VisualC\Release&quot;"
+				AdditionalLibraryDirectories="&quot;..\lib\dxguid&quot;;&quot;..\lib\sdl&quot;;&quot;..\lib\sdl_mixer&quot;"
 				IgnoreDefaultLibraryNames=""
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -136,7 +136,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\SDL-1.2.9\include&quot;;&quot;..\SDL_mixer-1.2.6&quot;;..\Engine\src;"
+				AdditionalIncludeDirectories="&quot;..\lib\sdl\include&quot;;&quot;..\lib\sdl_mixer\include&quot;;..\Engine\src;"
 				PreprocessorDefinitions="nDBGRECORD; CHECK_XDUKE_REV; nDEBUG; WIN32; _CONSOLE; PLATFORM_WIN32; _CRT_SECURE_NO_DEPRECATE; _CRT_NONSTDC_NO_DEPRECATE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="0"
@@ -164,7 +164,7 @@
 				AdditionalDependencies="dxguid.lib sdl.lib sdl_mixer.lib winmm.lib WS2_32.lib"
 				OutputFile="$(OutDir)/$(SolutionName)d.exe"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;C:\Users\Radar Duker\Documents\GitHub\SDL_mixer-devel-1.2.12-VC\SDL_mixer-1.2.12\lib\x86&quot;;&quot;C:\Users\Radar Duker\Documents\GitHub\SDL-devel-1.2.15-VC\SDL-1.2.15\lib\x86&quot;;&quot;C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Lib\x86&quot;;..\Directx_dec_2005\;&quot;..\SDL-1.2.9\VisualC\SDL\Release&quot;;&quot;..\SDL_mixer-1.2.6\VisualC\Release&quot;"
+				AdditionalLibraryDirectories="&quot;..\lib\dxguid&quot;;&quot;..\lib\sdl&quot;;&quot;..\lib\sdl_mixer&quot;"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -219,6 +219,10 @@
 			</File>
 			<File
 				RelativePath="src\game.c"
+				>
+			</File>
+			<File
+				RelativePath=".\Game.rc"
 				>
 			</File>
 			<File
@@ -320,6 +324,10 @@
 			</File>
 			<File
 				RelativePath="src\names.h"
+				>
+			</File>
+			<File
+				RelativePath=".\resource.h"
 				>
 			</File>
 			<File
