@@ -8148,10 +8148,15 @@ int main(int argc,char **argv)
 	//		"using it as it may contain new unsuspected bugs. Only a select\n"
 	//		"group of known dukers who know what they are doing should be using\n"
 	//		"it. Please report new bugs at xd@m-klein.com or on DX forums. Thx!\n\n");
-	if(XDUKE_SUBVERSION)
+	system("COLOR 0B\n");
+	printf("RDUKE PUBLIC RELEASE\n");
+	printf("by Radar\n");
+	printf("Built on XDuke 19.7.1\n");
+	printf("\n");
+	/*if(XDUKE_SUBVERSION)
 		printf("*** xDuke v%d.%d.%d ***\n\n", XDUKE_REV_X, XDUKE_REV_DOT_Y,XDUKE_SUBVERSION);
 	else
-		printf("*** xDuke v%d.%d ***\n\n", XDUKE_REV_X, XDUKE_REV_DOT_Y);
+		printf("*** xDuke v%d.%d ***\n\n", XDUKE_REV_X, XDUKE_REV_DOT_Y);*/
 
 	// FIX_00033: Fake multi and AI are now fully working
 	ud.multimode = 1;  // xduke: must be done before checkcommandline or that will prevent Fakeplayer and AI
