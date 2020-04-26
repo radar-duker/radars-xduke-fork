@@ -3188,6 +3188,7 @@ void displayrooms(short snum,long smoothratio)//G_DrawRooms() in EDuke32 -Radar
     struct player_struct *p;
     long tposx,tposy,tposz,dx,dy,thoriz,i;
     short tang;
+	int oviewingrange;//var for widescreen tilting -Radar
 
     p = &ps[snum];
 
@@ -3209,6 +3210,7 @@ void displayrooms(short snum,long smoothratio)//G_DrawRooms() in EDuke32 -Radar
 		newaspect_enable = 1;
 		videoSetCorrectedAspect();
 	}
+	oviewingrange=viewingrange;
 
     smoothratio = min(max(smoothratio,0),65536);
 
@@ -3281,7 +3283,8 @@ void displayrooms(short snum,long smoothratio)//G_DrawRooms() in EDuke32 -Radar
 
                 i = (tang&511); if (i > 256) i = 512-i;
                 i = sintable[i+512]*8 + sintable[i]*5L;
-                setaspect(i>>1,yxaspect);
+
+				setaspect(mulscale16(oviewingrange, i >> 1),yxaspect);//Widescreen tilting fix -Radar
           }
 
           if ( (snum == myconnectindex) && (numplayers > 1) )
@@ -3397,7 +3400,7 @@ void displayrooms(short snum,long smoothratio)//G_DrawRooms() in EDuke32 -Radar
             i = (tang&511); if (i > 256) i = 512-i;
             i = sintable[i+512]*8 + sintable[i]*5L;
             if ((1-ud.detail) == 0) i >>= 1;
-            rotatesprite(160<<16,100<<16,i,tang+512,MAXTILES-2,0,0,4+2+64,windowx1,windowy1,windowx2,windowy2);
+            rotatesprite(160<<16,100<<16,i,tang+512,MAXTILES-2,0,0,4+2+64+1024,windowx1,windowy1,windowx2,windowy2);
             walock[MAXTILES-2] = 199;
         }
     }
